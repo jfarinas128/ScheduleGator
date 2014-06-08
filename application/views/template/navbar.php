@@ -12,7 +12,7 @@
 		</div>
 		<div class="navbar-collapse collapse">
 			<ul class="nav navbar-nav">
-				<li><a href="<?php echo base_url();?>profile">Profile</a></li>
+				<li><a href="<?php echo base_url();?>landing/profileview">Profile</a></li>
 				<li><a href="<?php echo base_url();?>landing/viewcourses">Courses</a></li>
 				<li><a href="<?php echo base_url();?>courses/generateschedule">Generate Schedule</a></li>
 				<li class="dropdown"><a href="#" class="dropdown-toggle"
@@ -21,7 +21,7 @@
 					<ul class="dropdown-menu">
 						<li><a href="<?php echo base_url();?>landing/database">DB Query</a>
 						</li>
-						<li><a href="<?php echo base_url();?>landing/logout">Logout</a></li>
+						<li><a href="<?php echo base_url();?>auth/logout">Logout</a></li>
 					</ul>
 				</li>
 				<li><a href="<?php echo base_url();?>landing/about">About</a></li>

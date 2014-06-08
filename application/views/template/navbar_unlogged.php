@@ -12,7 +12,7 @@
 		</div>
 		<div class="navbar-collapse collapse">
 			<ul class="nav navbar-nav">
-				<li><a href="<?php echo base_url();?>landing/signin">Sign-In</a></li>
+				<li><a href="<?php echo base_url();?>auth/">Sign-In</a></li>
 				<li><a href="<?php echo base_url();?>landing/viewcourses">Search Courses</a></li>
 			</ul>
 		</div>

@@ -13,7 +13,7 @@
 
 <body  >
     <?php 
-    	if($this->session->userdata('email'))
+    	if($this->tank_auth->is_logged_in())
 			$this->load->view('template/navbar');
 		else  
 			$this->load->view('template/navbar_unlogged');

@@ -2,7 +2,13 @@
 
 class Courses extends CI_Controller {
 
-	
+	public function __construct()
+    {
+        parent::__construct();
+        $this->load->library('tank_auth');
+
+    }
+    
 	public function index()
 	{
 		//check session data if not logged in the show:

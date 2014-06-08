@@ -15,11 +15,8 @@ $this->load->view('template/header_files',$data);
 if(!isset($uid))
 	$uid=$this->session->userdata('uid');
 
-$user = $this->User_model->get_user($uid);
-$email = $user->email;
+$user = $this->tank_auth->get_username();
 ?>
-
-<!-- custom scripts for the page go here -->
 
 </head>
 
@@ -56,17 +53,14 @@ $email = $user->email;
 				</form>
 			</div>
 			<div class="col-md-4">
-				<h2>Name</h2>
+				<h2>UserName</h2>
 				<p>
 					<?php 
-					echo $user->first." ".$user->last;
+					echo $user;
 					?>
 				</p>
 
-				<h2>Email</h2>
-				<p>
-					<?php echo $email;?>
-				</p>
+				
 				<h2>Description</h2>
 				<p>Hello World</p>
 			</div>
