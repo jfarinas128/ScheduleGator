@@ -1,28 +1,14 @@
 <!DOCTYPE html>
-<?php
-//$email = $this->session->userdata('email');
-?>
-
 <html lang="en">
 <head>
 <?php
-$data = array();
-if(isset($title)){
-	$data['title'] = $title;
-}
-$this->load->view('template/header_files',$data);
-
-if(!isset($uid))
-	$uid=$this->session->userdata('uid');
-
+$this->load->view('template/header_files');
 $user = $this->tank_auth->get_username();
 ?>
 
 </head>
 
 <body>
-
-
 	<?php $this->load->view('template/navbar');?>
 
 	<div class="container">
@@ -33,19 +19,7 @@ $user = $this->tank_auth->get_username();
 
 		<div class="row">
 			<div class="col-md-8">
-
-				<?php 
-
-				$result = glob ("./upload/user".$uid);
-				if(count($result)){?>
-				<img src="<?php echo base_url("./upload/user".$uid); ?>" width="500">
-
-				<?php }else	{?>
-				<img src="<?php echo base_url("/assets/img/missing.jpg"); ?>"
-					width="500">
-				<?php }?>
-
-
+				<img src="<?php echo base_url("/assets/img/missing.jpg"); ?>"width="500">
 				<form action="<?php echo base_url();?>profile/upload" method="post"
 					enctype="multipart/form-data">
 					<label for="file">Filename:</label> <input type="file" name="file"

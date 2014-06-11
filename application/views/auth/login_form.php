@@ -1,8 +1,10 @@
 <?php $this->config->load('tankstrap'); $tankstrap = $this->config->item('tankstrap');?>
 <!DOCTYPE html>
 <html lang="en">
+<link rel="icon" type="image/gif" href="<?php echo base_url();?>gator.gif"/>  
 <link href="<?php echo $tankstrap["bootstrap_path"];?>" rel="stylesheet">
-<title><?php echo $tankstrap["login_page_title"];?></title>
+
+<title>Log into ScheduleGator</title>
 
 <?php
 $login = array(

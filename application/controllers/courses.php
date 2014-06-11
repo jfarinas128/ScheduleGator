@@ -6,13 +6,11 @@ class Courses extends CI_Controller {
     {
         parent::__construct();
         $this->load->library('tank_auth');
-
     }
     
 	public function index()
 	{
-		//check session data if not logged in the show:
-		if(!$this->User_model->logged()) 
+		if(!$this->tank_auth->is_logged_in()) 
 			$this->load->view('home_page');
 		else 
 			$this->load->view('main/index');
@@ -20,7 +18,7 @@ class Courses extends CI_Controller {
 	
 	public function search()
 	{
-		if((isset($_POST['query']) || isset($_POST['DEPT'])) && !isset($_POST['professor']))
+		if((isset($_POST['query']) || isset($_POST['DEPT'])))
 		{
 			$data['DEPT'] = $_POST['DEPT'];
 			$data['query'] = $_POST['query'];
@@ -33,29 +31,39 @@ class Courses extends CI_Controller {
 			}
 			elseif($data['query'])
 			{
+				$query = $data['query'];//non-stripped version for prof query
 				$data['query'] = preg_replace('/\s+/', '', $data['query']);//Strip string so queries match
-				switch(strlen($data['query']))
+				if (!preg_match('/[^A-Za-z]/', $data['query']) && strlen($data['query']) > 3)
 				{
-					case 4:
-						$sql = "select * from courses_professors where section = ?;";
-						$query = $this->db->query($sql, array($data['query']));
-						$data["courses"] = $query->result_array();
-						break;
-					case 3:
-					case 7:
-					case 8:
-						$str = $data['query'];
-						$str =  substr($str, 0, 3) . ' ' . substr($str, 3);
-						$data['query'] = $str;
-						$this->db->select('*');  //LIKE queries in codeigniter
-						$this->db->like('course_name',$str);
-						$query=$this->db->get("courses_professors");
-						$result=$query->result_array();
-						$data["courses"] = $result;
-						break;
-					default:
-						break;
+					$data['query'] = $query;
+					$this->searchprofessor();
+					return;
+				}
+				else
+				{
+					switch(strlen($data['query']))
+					{
+						case 4:
+							$sql = "select * from courses_professors where section = ?;";
+							$query = $this->db->query($sql, array($data['query']));
+							$data["courses"] = $query->result_array();
+							break;
+						case 3:
+						case 7:
+						case 8:
+							$str = $data['query'];
+							$str =  substr($str, 0, 3) . ' ' . substr($str, 3);
+							$data['query'] = $str;
+							$this->db->select('*');  //LIKE queries in codeigniter
+							$this->db->like('course_name',$str);
+							$query=$this->db->get("courses_professors");
+							$result=$query->result_array();
+							$data["courses"] = $result;
+							break;
+						default:
+							break;
 					}
+				}
 			}
 			//delete past search data
 			$this->load->library('nativesession');	
@@ -84,16 +92,12 @@ class Courses extends CI_Controller {
 			$this->nativesession->set('pages',sizeof($result_pages));
 			$this->nativesession->set('query',$data['query']);
 			$this->nativesession->set('DEPT',$data['DEPT']);
-
 			$this->searchresults(0);
 		}
-		elseif(isset($_POST['professor']))
-			$this->searchprofessor();
 		else
 			$this->load->view('courses/search_results');
-	}
-
-
+	    }
+	
 	public function searchprofessor()
 	{
 			$data['courses'] = array();
@@ -102,15 +106,18 @@ class Courses extends CI_Controller {
 			if(strpos($name," "))
 			{
 			   $qname = preg_split('#\s+#', $name, null, PREG_SPLIT_NO_EMPTY);
-			   $sql = "select * from courses_professors where professor_id = ANY(select id from professors where first= ? AND last = ?);";
 			   $finalq = array($qname[0], $qname[1]);
+			   $this->db->select('*');
+			   $this->db->like('instructor',$qname[0]);
+			   $this->db->like('instructor',$qname[1]);
+			   $query=$this->db->get("courses_professors");
 			}
 			else
 			{
 				$sql = " select * from courses_professors where professor_id = ANY(select id from professors where first= ? OR last = ?);";
 				$finalq = array($name, $name);
+				$query = $this->db->query($sql,$finalq);
 			}
-			$query = $this->db->query($sql,$finalq);
 			$result = $query->result_array();
 			$data["courses"] = $result;
 			$data['matches'] = sizeof($result);
@@ -122,10 +129,10 @@ class Courses extends CI_Controller {
 			$this->load->view('courses/search_results', $data);
 	}
 	
-	public function generateschedule()//NEED to handle if duplicates passed??
+	public function generateschedule()
 	{
 		$this->load->library('nativesession');	
-		if($this->input->is_ajax_request())
+		if($this->input->is_ajax_request() && $this->tank_auth->is_logged_in())
 		{
 			$courses = $this->nativesession->get('tempcourses'); //TEMPCOURSES TO BE USED IN ACTUAL SCHEDULE GENERATOR
 			$names = $this->nativesession->get('tempcoursenames');
@@ -134,7 +141,7 @@ class Courses extends CI_Controller {
 				$val = json_decode($_POST['ID']);
 				if($this->check_selected($val,"DEPT"))
 				{
-					print "This Section has already been added!";
+					print "Found";
 					return;
 				}
 				print 'Section DEPT Added!';
@@ -145,7 +152,7 @@ class Courses extends CI_Controller {
 				$val = ($_POST['section']);
 				if($this->check_selected($val,"section"))
 				{
-					print "This Section has already been added!";
+					print "Found";
 					return;
 				}
 				print 'Section: '.$val.' Added!';
@@ -162,27 +169,47 @@ class Courses extends CI_Controller {
 				print 'Course: '.$val.' Added!';
 				$sql = "select * from courses_professors where course_name = ?;";
 			}
-			elseif(empty($_POST["course"]) && empty($_POST["section"]) && empty($_POST["ID"]))//all empty, clear current list 
+			elseif(!empty($_POST["clear"]))//all empty, clear current list 
 			{
 				$this->nativesession->delete('tempcourses');
 				$this->nativesession->delete('tempcoursenames');
 				$this->nativesession->set('tempcourses',array());
 				$this->nativesession->set('tempcoursenames',array());
+				//echo json_encode($this->nativesession->get('tempcoursenames'));
+				return;
+			}
+			elseif(!empty($_POST["remove"]))//all empty, clear specified courses
+			{
+				$value = $_POST["remove"];
+				$names = $this->nativesession->get('tempcoursenames'); 
+				$courses = $this->nativesession->get('tempcourses');
+				foreach($names as $index => $arr)
+				{
+					if ($arr['course_name'] == $value || $arr['section'] == $value || $arr['ID'] == $value)
+						{
+							unset($names[$index]); 
+							unset($courses[$index]);
+						}
+				}
+				$this->nativesession->set('tempcoursenames',$names);
+				$this->nativesession->set('tempcourses',$courses);
 				return;
 			}
 			$query = $this->db->query($sql, array($val));
 			$data = $query->result_array();
 			if(!empty($_POST["course"]))
-				array_push($names,array('course_name' => $data[0]['course_name'],'section' => "ALL SECTIONS")); 
+				array_push($names,array('course_name' => $data[0]['course_name'],'section' => "ALL SECTIONS", 'ID' => $data[0]['ID'])); 
 			else
-				array_push($names,array('course_name' => $data[0]['course_name'],'section' => $data[0]['section'])); 
+				array_push($names,array('course_name' => $data[0]['course_name'],'section' => $data[0]['section'], 'ID' => $data[0]['ID'])); 
 			array_push($courses,$data);
 			$this->nativesession->set('tempcourses',$courses);				
 			$this->nativesession->set('tempcoursenames',$names);
 		}
+		elseif(!$this->tank_auth->is_logged_in())
+			print "nsi";	
 		else//Algorithm goes here
 		{
-			$this->load->view('courses/generate_schedule');	
+			$this->load->view('courses/generate_schedule');
 		}
 	}
 

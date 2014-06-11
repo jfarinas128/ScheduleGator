@@ -5,8 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="shortcut icon" href="<?php echo base_url();?>assets/ico/favicon.ico">
     <title>Courses Offered</title>
-    <link href="<?php echo base_url();?>assets/css/bootstrap.min.css" rel="stylesheet">
-    <link href="<?php echo base_url();?>assets/css/bootstrap-checkbox.css" rel="stylesheet">
+    <?php $this->load->view('template/header_files'); ?>
+    <!--<link href="<?php echo base_url();?>assets/css/bootstrap-checkbox.css" rel="stylesheet">-->
     <link href="<?php echo base_url();?>assets/css/signin.css" rel="stylesheet">
 
 </head>
@@ -28,8 +28,8 @@
                 <form action='<?php echo base_url();?>courses/search' method='post' id='coursesearch' role="form" class="form-horizontal">
                     <div class="form-group">
                         <div class="col-md-5">
-                            <input type="checkbox"class="checkbox"name="professor" value="prof"> Professor Name<br>
-                            <input class="btn btn-search col-md-4" type="submit" value="Search" style="float: right" />
+                            <!--<input type="checkbox"class="checkbox"name="professor" value="prof"> Professor Name<br>-->
+                            <br><input class="btn btn-search col-md-4" type="submit" value="Search" style="float: right" />
                             <div style="overflow: hidden; padding-right: .5em;">
                                 <input name="query" class="form-control" type="text" style="width: 100%;" />
                             </div>
@@ -219,8 +219,8 @@
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script src="<?php echo base_url();?>assets/js/bootstrap.min.js"></script>
-<script src = "<?php echo base_url();?>assets/js/bootstrap-checkbox.js"></script>
+<!--<script src = "<?php echo base_url();?>assets/js/bootstrap-checkbox.js"></script>
 <script>
 $('.checkbox').checkbox();
-</script>
+</script>-->
 </html>

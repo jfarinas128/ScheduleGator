@@ -1,16 +1,8 @@
 <!DOCTYPE html>
-<?php
-$email = $this->session->userdata('email');
-?>
-
 <html lang="en">
 <head>
 <?php
-$data = array();
-if(isset($title)){
-	$data['title'] = $title;
-}
-$this->load->view('template/header_files',$data);
+$this->load->view('template/header_files');
 ?>
 </head>
 <body>

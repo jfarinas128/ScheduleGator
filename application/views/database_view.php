@@ -6,6 +6,7 @@ $error = true;
 $message = false;
 if(isset($query))
 	$error = false;
+$this->load->view('template/header_files');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -16,12 +17,6 @@ if(isset($query))
 <meta name="description" content="NBA BELT CHAMPIONSHIP">
 
 <title>Database Querying</title>
-
-<!-- Bootstrap core CSS -->
-<link href="<?php echo base_url();?>assets/css/bootstrap.min.css"
-	rel="stylesheet">
-
-<!-- Custom styles for this template -->
 <style>
 body {
 	padding-top: 40px;
@@ -29,15 +24,6 @@ body {
 	background-color: #eee;
 }
 </style>
-
-<!-- Just for debugging purposes. Don't actually copy this line! -->
-<!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
-
-<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-<!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-      <![endif]-->
 </head>
 
 <body>
@@ -45,12 +31,6 @@ body {
 
 	<div class="container">
 		<?php
-
-		/*
-
-		Check if there was an Error
-
-		*/
 		if($error) {
             echo '<div class="row"><div class="bg-danger"><p class="lead text-danger">'.$message.'</p></div></div>';
         }
@@ -79,12 +59,6 @@ body {
         }
         ?>
 	</div>
-	<!-- /container -->
-
 	<?php $this->load->view('template/footer_scripts'); ?>
-
-	<!-- Bootstrap core JavaScript
-    ================================================== -->
-	<!-- Placed at the end of the document so the pages load faster -->
 </body>
 </html>

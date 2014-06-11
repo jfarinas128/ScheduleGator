@@ -8,7 +8,7 @@
 |--------------------------------------------------------------------------
 */
 $config['website_name'] = 'ScheduleGator';
-$config['webmaster_email'] = 'webmaster@your-site.com';
+$config['webmaster_email'] = 'gatorscheduling@gmail.com';
 
 /*
 |--------------------------------------------------------------------------

@@ -16,6 +16,5 @@
 				<li><a href="<?php echo base_url();?>landing/viewcourses">Search Courses</a></li>
 			</ul>
 		</div>
-		<!--/.nav-collapse -->
 	</div>
 </div>

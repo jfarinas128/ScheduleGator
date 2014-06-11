@@ -1,15 +1,9 @@
 <!DOCTYPE html>
-<?php
-?>
-
 <html lang="en">
 <head>
 
-<?php $this->load->view('template/header_files');
-$this->load->model('User_model');
-?>
+<?php $this->load->view('template/header_files');?>
 </head>
-
 <body>
 
 	<div class='container'>
@@ -21,7 +15,7 @@ $this->load->model('User_model');
 		</div>
 		<div class='container'>
 			<div class='row'>
-			Rag tag group of developers making an awesome site!
+			
 			</div>
 		</div>
 

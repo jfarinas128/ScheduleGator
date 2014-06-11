@@ -1,22 +1,13 @@
 <!DOCTYPE html>
-<?php
-$email = $this->session->userdata('email');
-?>
-
 <html lang="en">
 <head>
 <?php
-$data = array();
-if(isset($title)){
-	$data['title'] = $title;
-}
-$this->load->view('template/header_files',$data);
+$this->load->view('template/header_files');
+$this->load->view('template/navbar_unlogged');
 ?>
 </head>
 
 <body>
-
-	<?php $this->load->view('template/navbar_unlogged');?>
 
 	<div class="container">
 		<div class="jumbotron">

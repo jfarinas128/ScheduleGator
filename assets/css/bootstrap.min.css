@@ -1612,6 +1612,10 @@ table td[class*="col-"],table th[class*="col-"] {
 		{
 		border-bottom: 0
 	}
+	.table-responsive
+	{
+	    overflow-x: auto;
+	}
 }
 
 fieldset {

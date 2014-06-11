@@ -11,8 +11,15 @@
 |
 */
 $config['mailtype'] = 'html';
-$config['charset'] = 'utf-8';
+$config['charset'] = 'iso-8859-1';
 $config['newline'] = "\r\n";
+$config['smtp_host']='ssl://smtp.googlemail.com';
+$config['smtp_port']='465'; 
+$config['smtp_user']='gatorscheduling'; 
+$config['smtp_pass']='schedulegator28'; 
+$config['protocol']= 'smtp';
+
+
 
 
 /* End of file email.php */

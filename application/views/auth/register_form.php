@@ -41,15 +41,16 @@ $captcha = array(
 <html lang="en">
     <head>
         <link href="<?php echo $tankstrap["bootstrap_path"];?>" rel="stylesheet">
+        <link rel="icon" type="image/gif" href="<?php echo base_url();?>gator.gif"/>  
         <title><?php echo $tankstrap["register_page_title"];?></title>
     </head>
-    <body>
+    <body style = "background-color: #5E9BE4;">
 	<div class="container">
 		<div class="row">
 			<div class="span6 offset3">
 				<div class="well">
 					<center>
-					<h2>Register!</h2>
+					<h2>Register with ScheduleGator!</h2>
 <?php echo form_open($this->uri->uri_string()); ?>
 
 	<?php if ($use_username): ?>

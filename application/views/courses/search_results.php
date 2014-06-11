@@ -18,12 +18,13 @@
 <meta charset="utf-8">
 <link rel="shortcut icon" href="<?php echo base_url();?>assets/ico/favicon.ico">
 <title>Search Results</title>
-<link href="<?php echo base_url();?>assets/css/bootstrap.min.css" rel="stylesheet">
+<?php $this->load->view('template/header_files'); ?>
 <link href="<?php echo base_url();?>assets/css/signin.css" rel="stylesheet">
+<link href="<?php echo base_url();?>assets/css/jquery.toastmessage.css" rel="stylesheet">
 </head>
 
 <body>
-<?php
+<?php  //NEED TO FIX PHP ECHO VS STRAIGHT HTML
     if($this->tank_auth->is_logged_in())
       $this->load->view('template/navbar');
     else  
@@ -32,21 +33,20 @@
 <div class="container">
 		<div class="jumbotron" style="text-align: center;">
  			<br><h2>Search Results For: <?php echo $query;?></h2></br>
-      <?php 
-      if($view)
-      {
-        echo '<p> Number of Matches: '.$matches.'</p><p>Page: '.($current_page+1).'</p>';;
-   		  if($DEPT)
-          echo '<p>Department: '.$DEPT.'</p>';
- 			  echo '<p>*You may add multiple sections of a given course, or the course itself*</p>'.
-             '<a href = "#" class = "showAll">Show/Hide All Discussions</a>';
-      }
-      ?>
- 		</div>
+      <?php if($view):?>
+        <p>Number of Matches: <?php echo $matches;?></p>
+              <p>Page: <?php echo $current_page+1;?></p>
+   		 <?php if($DEPT):?>
+        <p>Department: <?php echo $DEPT;?></p>
+       <?php endif; ?>
+ 			  <p>*You may add multiple sections of a given course, or the course itself*</p>
+              <a href = "#" class = "showAll">Show/Hide All Discussions</a>
+      <?php endif; ?>
+ </div>
 
  	<div class="row-fluid">
         <div class="thumbnail span17 box">	
-            <table class="table table-bordered table-condensed" id="results-table" cellpadding="5px">
+            <table class="table table-bordered table-condensed table-responsive" id="results-table" cellpadding="5px">
                 <tr align="center" bgcolor= "#C3C8CE">
                 	  <th>Discussion(s)</th>
                     <th>Course Number</th>
@@ -91,7 +91,7 @@
                    if($course['section'] != 'DEPT')
                       echo '<tr align="center" bgcolor= "#E5E5E5" class = "row'.$index.'" id = "'.$index.'" style="display: none;">'.'<td><a href="#" type = "COURSE" style="text-decoration: none" class ="add btn btn-primary btn-xs" id ="'.$course['course_name'].'" >+ '.$course['course_name'].'</a></td><td><a href="#" type = "SECTION" style="text-decoration: none" class = "add btn btn-primary btn-xs" id = "'.$course['section'].'">+'.$course['section'].'</a></td><td></td><td></td><td></td><td></td><td>';
                    else 
-                      echo '<tr align="center" bgcolor= "#E5E5E5" class = "row'.$index.'" id = "'.$index.'" style="display: none;">'.'<td><a href="#" style="text-decoration: none" class ="add btn btn-primary btn-xs" id ="'.$course['course_name'].'" >+ '.$course['course_name'].'</a></td><td><a href="#" type="ID" style="text-decoration: none" class = "add btn btn-primary btn-xs" id = "'.$course['section'].'">+'.$course['ID'].'</a></td><td></td><td></td><td></td><td></td><td>';
+                      echo '<tr align="center" bgcolor= "#E5E5E5" class = "row'.$index.'" id = "'.$index.'" style="display: none;">'.'<td><a href="#" style="text-decoration: none" class ="add btn btn-primary btn-xs" id ="'.$course['course_name'].'" >+ '.$course['course_name'].'</a></td><td><a href="#" type="ID" style="text-decoration: none" class = "add btn btn-primary btn-xs" id = "'.$course['ID'].'">+'.$course['section'].'</a></td><td></td><td></td><td></td><td></td><td>';
                    if(!$discussion["discussion_room"] && $course['lecture_building'] && $discussion["discussion_building"] != "WEB")//Fixes error with missing discussion location missing
                       echo $discussion["discussion_day"].'</td><td>'.$discussion["discussion_period"].'</td><td>'.$course['lecture_building'].' '.$discussion["discussion_building"];
                    else
@@ -118,6 +118,7 @@
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script src="<?php echo base_url();?>assets/js/bootstrap.min.js"></script>
+<script src="<?php echo base_url();?>assets/js/jquery.toastmessage.js"></script>
 <script>
     function UpdatePage() 
     {
@@ -136,6 +137,7 @@
     }
     $(document).ready(
         function () {
+
             $(".row").hide();
             $(".show").click(function () {
                 var rowId = $(this).attr("id");
@@ -170,7 +172,18 @@
                     dataType: "text",
                     cache: false,
                     success: function (data) {
-                        alert(data); //debug
+                        switch(data)
+                        {
+                          case "Found":
+                              $().toastmessage('showNoticeToast', 'You have already added this section'); 
+                              break;
+                          case "nsi":
+                              $().toastmessage('showErrorToast', 'Please sign in to add courses'); 
+                              break;  
+                          default:
+                              $().toastmessage('showSuccessToast',data);
+                        }
+                        
                     }
                 });
                 return false;
