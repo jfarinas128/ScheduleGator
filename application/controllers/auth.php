@@ -11,6 +11,7 @@ class Auth extends CI_Controller
 		$this->load->library('security');
 		$this->load->library('tank_auth');
 		$this->lang->load('tank_auth');
+		$this->load->library('nativesession');
 	}
 
 	function index()
@@ -69,7 +70,8 @@ class Auth extends CI_Controller
 						$data['login_by_username'],
 						$data['login_by_email'])) {								// success
 					redirect('');
-
+					$searchable = array();
+					$this->nativesession->set('searchable', $searchable);
 				} else {
 					$errors = $this->tank_auth->get_error_message();
 					if (isset($errors['banned'])) {								// banned user

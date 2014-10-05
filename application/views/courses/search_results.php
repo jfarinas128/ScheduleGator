@@ -36,6 +36,7 @@
       <?php if($view):?>
         <p>Number of Matches: <?php echo $matches;?></p>
               <p>Page: <?php echo $current_page+1;?></p>
+              <p>Searchid: <?php echo $sid;?></p>
    		 <?php if($DEPT):?>
         <p>Department: <?php echo $DEPT;?></p>
        <?php endif; ?>
@@ -99,16 +100,18 @@
                    echo '</td><td></td></tr>';
                } 
     }
-    echo '</table><p style="margin:auto; text-align:center; display:block;">';
+    echo '</table><div style="text-align:center">';
+    
     if($pages == 1)
-      echo'Page: <a href= "'.base_url().'courses/searchresults/0">'.$pages.'</a>';
+      echo'Page: <a href= "'.base_url().'courses/searchresults/0/'.$sid.'">'.$pages.'</a>';
     elseif($pages != 'p')
     {
       echo'Page: ';
       for($i=0;$i<$pages;$i++)
-        echo'<a href= "'.base_url().'courses/searchresults/'.$i.'">'.($i+1).'</a>|';
+        echo'<a href= "'.base_url().'courses/searchresults/'.$i.'/'.$sid.'">'.($i+1).'</a>|';
     }
-    echo'</p>';
+    echo "</div>";
+
   }
 ?>
      </div>
@@ -120,6 +123,7 @@
 <script src="<?php echo base_url();?>assets/js/bootstrap.min.js"></script>
 <script src="<?php echo base_url();?>assets/js/jquery.toastmessage.js"></script>
 <script>
+    var imagePath = "<?php echo base_url();?>assets/images/";
     function UpdatePage() 
     {
       var selected = <?php echo json_encode($selected); ?>;

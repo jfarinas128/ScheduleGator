@@ -6,6 +6,8 @@ class Courses extends CI_Controller {
     {
         parent::__construct();
         $this->load->library('tank_auth');
+        $this->load->library('nativesession');
+        $this->load->model("Course");
     }
     
 	public function index()
@@ -18,16 +20,15 @@ class Courses extends CI_Controller {
 	
 	public function search()
 	{
+		
 		if((isset($_POST['query']) || isset($_POST['DEPT'])))
 		{
-			$data['DEPT'] = $_POST['DEPT'];
-			$data['query'] = $_POST['query'];
+			$data['DEPT'] = $this->input->post('DEPT');//need to sanitize data!
+			$data['query'] = $this->input->post('query');
 			$data['courses'] = array();
 			if($data['DEPT'])
 			{
-				$sql = "select * from courses_professors where department = ?;";
-				$query = $this->db->query($sql, array($data['DEPT']));
-				$data["courses"] = $query->result_array();
+				$data["courses"] = $this->Course->findByDept($data['DEPT']);
 			}
 			elseif($data['query'])
 			{
@@ -35,8 +36,16 @@ class Courses extends CI_Controller {
 				$data['query'] = preg_replace('/\s+/', '', $data['query']);//Strip string so queries match
 				if (!preg_match('/[^A-Za-z]/', $data['query']) && strlen($data['query']) > 3)
 				{
+					$results = $this->Course->findByProf($query);
+					$data["courses"] = $results['courses'];
+					$data['matches'] = $results['matches'];
+					$data['pages'] = 'p';
+					$data['current_page'] = 0;
+					$data['sid'] = 0;
+					$data['DEPT']  = '';
 					$data['query'] = $query;
-					$this->searchprofessor();
+					$data['discussions'] =$results['discussions'];
+					$this->load->view('courses/search_results', $data);
 					return;
 				}
 				else
@@ -44,9 +53,7 @@ class Courses extends CI_Controller {
 					switch(strlen($data['query']))
 					{
 						case 4:
-							$sql = "select * from courses_professors where section = ?;";
-							$query = $this->db->query($sql, array($data['query']));
-							$data["courses"] = $query->result_array();
+							$data["courses"] = $this->Course->findBySection($data['query']);
 							break;
 						case 3:
 						case 7:
@@ -54,91 +61,49 @@ class Courses extends CI_Controller {
 							$str = $data['query'];
 							$str =  substr($str, 0, 3) . ' ' . substr($str, 3);
 							$data['query'] = $str;
-							$this->db->select('*');  //LIKE queries in codeigniter
-							$this->db->like('course_name',$str);
-							$query=$this->db->get("courses_professors");
-							$result=$query->result_array();
-							$data["courses"] = $result;
+							$data["courses"] =  $this->Course->findByNumber($str);
 							break;
 						default:
 							break;
 					}
 				}
 			}
-			//delete past search data
-			$this->load->library('nativesession');	
-			$this->nativesession->delete('result_pages');
-			$this->nativesession->delete('pages');
-			$this->nativesession->delete('current_page');
-			$this->nativesession->delete('matches');
-			$this->nativesession->delete('query');
-			$this->nativesession->delete('DEPT');
-			
+			$searchable = $this->nativesession->get('searchable');
+			$searchid = uniqid();	
 			$matches = sizeof($data['courses']);
-			$result_pages = array();
 			if($matches > 20)
 			{
 				$split_size = ceil(($matches / 20));//20 results per page
 				$chunks = $this->splitArray($data['courses'], $split_size);
 				foreach($chunks as $index => $chunk)
-					$result_pages[$index] = $chunk;
+					$searchable[$searchid][$index] = $chunk;
 			}
 			else
-				$result_pages[0] = $data['courses'];
+				$searchable[$searchid][0] = $data['courses'];
+
+			$matches = sizeof($data['courses']);
 			//Place new search data
-			$this->nativesession->set('result_pages', $result_pages);
+			$this->nativesession->set('searchable', $searchable);
 			$this->nativesession->set('matches', $matches);
 			$this->nativesession->set('current_page', 0);
-			$this->nativesession->set('pages',sizeof($result_pages));
+			$this->nativesession->set('pages',sizeof($searchable[$searchid]));
 			$this->nativesession->set('query',$data['query']);
 			$this->nativesession->set('DEPT',$data['DEPT']);
-			$this->searchresults(0);
+			$this->searchresults(0, $searchid);
 		}
 		else
 			$this->load->view('courses/search_results');
 	    }
 	
-	public function searchprofessor()
-	{
-			$data['courses'] = array();
-			$name = $_POST['query'];
-			$this->load->library('nativesession');	
-			if(strpos($name," "))
-			{
-			   $qname = preg_split('#\s+#', $name, null, PREG_SPLIT_NO_EMPTY);
-			   $finalq = array($qname[0], $qname[1]);
-			   $this->db->select('*');
-			   $this->db->like('instructor',$qname[0]);
-			   $this->db->like('instructor',$qname[1]);
-			   $query=$this->db->get("courses_professors");
-			}
-			else
-			{
-				$sql = " select * from courses_professors where professor_id = ANY(select id from professors where first= ? OR last = ?);";
-				$finalq = array($name, $name);
-				$query = $this->db->query($sql,$finalq);
-			}
-			$result = $query->result_array();
-			$data["courses"] = $result;
-			$data['matches'] = sizeof($result);
-			$data['pages'] = 'p';
-			$data['current_page'] = 0;
-			$data['DEPT']  = '';
-			$data['query'] = $name;
-			$data['discussions'] = $this->get_discussions($data['courses']);
-			$this->load->view('courses/search_results', $data);
-	}
-	
 	public function generateschedule()
 	{
-		$this->load->library('nativesession');	
 		if($this->input->is_ajax_request() && $this->tank_auth->is_logged_in())
 		{
 			$courses = $this->nativesession->get('tempcourses'); //TEMPCOURSES TO BE USED IN ACTUAL SCHEDULE GENERATOR
 			$names = $this->nativesession->get('tempcoursenames');
 			if(!empty($_POST["ID"]))
 			{
-				$val = json_decode($_POST['ID']);
+				$val = json_decode($this->input->post('ID'));
 				if($this->check_selected($val,"DEPT"))
 				{
 					print "Found";
@@ -149,7 +114,7 @@ class Courses extends CI_Controller {
 			}
 			elseif(!empty($_POST["section"]))
 			{
-				$val = ($_POST['section']);
+				$val = ($this->input->post('section'));
 				if($this->check_selected($val,"section"))
 				{
 					print "Found";
@@ -160,7 +125,7 @@ class Courses extends CI_Controller {
 			}
 			elseif(!empty($_POST["course"]))
 			{//DO select queries for courses as a whole
-				$val = ($_POST['course']);
+				$val = ($this->input->post('course'));
 				if($this->check_selected($val,"course"))
 				{
 					print "All sections for this Course have been added!";
@@ -180,7 +145,7 @@ class Courses extends CI_Controller {
 			}
 			elseif(!empty($_POST["remove"]))//all empty, clear specified courses
 			{
-				$value = $_POST["remove"];
+				$value =$this->input->post("remove");
 				$names = $this->nativesession->get('tempcoursenames'); 
 				$courses = $this->nativesession->get('tempcourses');
 				foreach($names as $index => $arr)
@@ -229,6 +194,7 @@ class Courses extends CI_Controller {
 	  return $new_array;
 	}
 
+	
 	public function check_selected($course, $type)
 	{
 		$names = $this->nativesession->get('tempcoursenames');
@@ -277,27 +243,16 @@ class Courses extends CI_Controller {
 			return false;
 
 	}
-	public function get_discussions($courses)
-	{
-		$sql = "select * from discussions where course_id = ?;";
-		$discussions = array();
-		foreach($courses as $course)//Get discussions for each course found TO BE PUT IN MODEL
-			{
-				$query = $this->db->query($sql, array($course["ID"]));
-				$discussions[$course["section"]] = $query->result_array();
-			}
-		return $discussions;
-	}
 
-	public function searchresults($number)
+	public function searchresults($number, $searchid)
 	{
-		$this->load->library('nativesession');	
-		$result_pages = $this->nativesession->get('result_pages');	
-		$data["courses"] = $result_pages[$number];
-		$data["discussions"] = $this->get_discussions($data["courses"]);
+		$searchable = $this->nativesession->get('searchable');	
+		$data['matches'] = $this->nativesession->get('matches');
+		$data["courses"] = $searchable[$searchid][$number];
+		$data["discussions"] = $this->Course->get_discussions($data["courses"]);
 		$data['pages'] = $this->nativesession->get('pages');	
 		$data['current_page'] = $number;
-		$data['matches'] = $this->nativesession->get('matches');
+		$data['sid'] = $searchid;
 		$data['query'] = $this->nativesession->get('query');
 		$data['DEPT'] = $this->nativesession->get('DEPT');
 		$this->load->view('courses/search_results', $data);
