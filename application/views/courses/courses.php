@@ -33,8 +33,9 @@
                             <div style="overflow: hidden; padding-right: .5em;">
                                 <input name="query" class="form-control" type="text" style="width: 100%;" />
                             </div>
-                            
-                            <p>OR Search by Department for a list of Courses</p>
+                            <br/>
+                            <p>OR</p>
+                            <p>Search by Department for a list of Courses</p>
                             <select class="form-control" name="DEPT" onchange="this.form.submit()">
                                 <option value="">SELECT A DEPARTMENT</option>
                                 <option value="ACCOUNTING">ACCOUNTING</option>

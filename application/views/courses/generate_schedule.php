@@ -9,7 +9,13 @@
     <link href="<?php echo base_url();?>assets/css/jquery.toastmessage.css" rel="stylesheet">
     <?php $this->load->view('template/navbar');?>
 </head>
-
+<style>
+.divider{
+    width:5px;
+    height:auto;
+    display:inline-block;
+}
+</style>
 <body>
     <div class="container">
         <div class="jumbotron">
@@ -46,12 +52,14 @@
                                  <td>'. $course['section'].'</td>
                                  </tr>'; 
                                   }
-                      }     
-                    //var_dump($arr);?>
+                      } 
+                    ?>
                     </tbody>
                 </table>
             </div>
             <a href="#" id="clear" class="btn btn-search col-md-2">Clear Courses</a>
+            <div class="divider"></div>
+            <a href="<?php echo base_url();?>courses/generated"  class="btn btn-search ">Generate Schedule</a>
         </div>
     </div>
 </body>

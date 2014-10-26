@@ -8,6 +8,7 @@ class Courses extends CI_Controller {
         $this->load->library('tank_auth');
         $this->load->library('nativesession');
         $this->load->model("Course");
+        $this->load->model("Schedule");
     }
     
 	public function index()
@@ -16,6 +17,14 @@ class Courses extends CI_Controller {
 			$this->load->view('home_page');
 		else 
 			$this->load->view('main/index');
+	}
+
+	public function generated()
+	{
+		$formatted_schedule = $this->Schedule->make_date_time();
+  		$data['selected_courses'] = $formatted_schedule[0];
+  		$data['smallest'] = $formatted_schedule[1];
+		$this->load->view('courses/generated',$data);
 	}
 	
 	public function search()
