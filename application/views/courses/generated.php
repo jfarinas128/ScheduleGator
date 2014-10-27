@@ -15,7 +15,7 @@
   <div class="jumbotron">
     <div class="thumbnail box span4">
 <?php
-echo '<p>Smallest Group: '.$smallest;
+//echo '<p>Smallest Group: '.$smallest;
 foreach($selected_courses as $index => $course_group)
   {
       echo '<p>Group: '.$index.' Size:'.sizeof($course_group).'</p>';
@@ -29,11 +29,11 @@ foreach($selected_courses as $index => $course_group)
           echo '</pre>';
         }
   }
-/*
+echo '<p>Generated SQL</p>';
 echo '<pre>';
-print_r($selected_courses);
+print_r($openinfo);
 echo '<br/>';
-*/
+
 ?>
     </div>
   </div>

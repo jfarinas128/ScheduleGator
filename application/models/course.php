@@ -5,12 +5,25 @@ class Course extends CI_Model {
 	function __construct()
 	{
 		parent::__construct();
+		$this->days_of_the_week = array('M','T','W','R','F');
+		$this->periods = array('1','2','3','4','5','6','7','8','9','10','11', 'E1', 'E2','E3');
+		$this->special_cases = array('E1' => 12, 'E2' => 13, 'E3' => 14, 'TBA' => 0);
 	}
 
 	public function record_count() 
 	{
         return $this->db->count_all("courses_professors");
     }
+    
+    public function getOpenDays($course)
+	{
+		return array_diff($this->days_of_the_week, $course['lecture_day']);
+	}
+
+	public function getOpenPeriods($course)
+	{
+		return array_diff($this->periods, $course['lecture_period_array']);
+	}
 
 	public function findByDept($dept)
 	{

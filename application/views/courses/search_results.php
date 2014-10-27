@@ -24,7 +24,7 @@
 </head>
 
 <body>
-<?php  //NEED TO FIX PHP ECHO VS STRAIGHT HTML
+<?php  
     if($this->tank_auth->is_logged_in())
       $this->load->view('template/navbar');
     else  

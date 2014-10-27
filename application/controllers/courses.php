@@ -21,9 +21,9 @@ class Courses extends CI_Controller {
 
 	public function generated()
 	{
-		$formatted_schedule = $this->Schedule->make_date_time();
-  		$data['selected_courses'] = $formatted_schedule[0];
-  		$data['smallest'] = $formatted_schedule[1];
+		$results = $this->Schedule->make_schedule();
+		$data['openinfo'] = $results[1];
+  		$data['selected_courses'] = $results[0];
 		$this->load->view('courses/generated',$data);
 	}
 	
