@@ -30,28 +30,27 @@
                     </thead>
                     <tbody>
                     <?php 
-                      $arr= $this->nativesession->get('tempcourses'); 
                       $user_courses = $this->nativesession->get('tempcoursenames'); 
                       if($user_courses)
                       {
                           foreach($user_courses as $course) 
                           { 
-                            switch($course['section'])
-                            {
-                                case "DEPT":
-                                    echo '<tr id = "'.$course['ID'].'"><td><a href="#" style="text-decoration: none" class = "add btn btn-primary btn-xs remove" type = "'. $course['section'].'" id = "'.$course['ID'].'">Remove '.$course['course_name'].'</a></td>'; 
-                                    break;
-                                case "ALL SECTIONS":
-                                    echo '<tr id = "'.$course['course_name'].'"><td><a href="#" style="text-decoration: none" class = "add btn btn-primary btn-xs remove" type = "'. $course['section'].'" id = "'.$course['course_name'].'">Remove '.$course['course_name'].'</a></td>'; 
-                                    break;
-                                default:
-                                    echo '<tr id = "'.$course['section'].'"><td><a href="#" style="text-decoration: none" class = "add btn btn-primary btn-xs remove" type = "'. $course['section'].'" id = "'.$course['section'].'">Remove '.$course['course_name'].'</a></td>'; 
-                                    break;
-                            }
-                           echo '<td>'.$course['course_name'].'</td>
-                                 <td>'. $course['section'].'</td>
-                                 </tr>'; 
-                                  }
+                              switch($course['section'])
+                              {
+                                  case "DEPT":
+                                      echo '<tr id = "'.$course['ID'].'"><td><a href="#" style="text-decoration: none" class = "add btn btn-primary btn-xs remove" type = "'. $course['section'].'" id = "'.$course['ID'].'">Remove '.$course['course_name'].'</a></td>'; 
+                                      break;
+                                  case "ALL SECTIONS":
+                                      echo '<tr id = "'.$course['course_name'].'"><td><a href="#" style="text-decoration: none" class = "add btn btn-primary btn-xs remove" type = "'. $course['section'].'" id = "'.$course['course_name'].'">Remove '.$course['course_name'].'</a></td>'; 
+                                      break;
+                                  default:
+                                      echo '<tr id = "'.$course['section'].'"><td><a href="#" style="text-decoration: none" class = "add btn btn-primary btn-xs remove" type = "'. $course['section'].'" id = "'.$course['section'].'">Remove '.$course['course_name'].'</a></td>'; 
+                                      break;
+                              }
+                              echo '<td>'.$course['course_name'].'</td>
+                                    <td>'. $course['section'].'</td>
+                                    </tr>'; 
+                          }
                       } 
                     ?>
                     </tbody>

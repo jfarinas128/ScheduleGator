@@ -1,7 +1,7 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 class Course extends CI_Model {
-	public $table_name = 'courses';
+	
 	function __construct()
 	{
 		parent::__construct();
@@ -82,4 +82,12 @@ class Course extends CI_Model {
 			}
 		return $discussions;
 	}
+
+	public function get_discussion($course)
+	{
+		$sql = "select * from discussions where course_id = ?;";
+		$query = $this->db->query($sql, array($course["ID"]));
+		return $query->result_array();
+	}
+
 }

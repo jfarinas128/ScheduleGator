@@ -24,6 +24,8 @@ class Courses extends CI_Controller {
 		$results = $this->Schedule->make_schedule();
 		$data['openinfo'] = $results[1];
   		$data['selected_courses'] = $results[0];
+  		$data['course_availability'] = $results[2];
+  		$data['ineligible_courses'] = $results[3];
 		$this->load->view('courses/generated',$data);
 	}
 	
@@ -82,7 +84,7 @@ class Courses extends CI_Controller {
 			$matches = sizeof($data['courses']);
 			if($matches > 20)
 			{
-				$split_size = ceil(($matches / 20));//20 results per page
+				$split_size = ceil(($matches / 20));//roughly 20 results per page
 				$chunks = $this->splitArray($data['courses'], $split_size);
 				foreach($chunks as $index => $chunk)
 					$searchable[$searchid][$index] = $chunk;
@@ -181,7 +183,7 @@ class Courses extends CI_Controller {
 		}
 		elseif(!$this->tank_auth->is_logged_in())
 			print "nsi";	
-		else//Algorithm goes here
+		else
 		{
 			$this->load->view('courses/generate_schedule');
 		}

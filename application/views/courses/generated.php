@@ -29,11 +29,24 @@ foreach($selected_courses as $index => $course_group)
           echo '</pre>';
         }
   }
+
 echo '<p>Generated SQL</p>';
 echo '<pre>';
 print_r($openinfo);
 echo '<br/>';
+echo '</pre>';
 
+echo '<p>Discussions</p>';
+echo '<pre>';
+print_r($course_availability);
+echo '<br/>';
+echo '</pre>';
+
+echo '<p>Ineligible Courses</p>';
+echo '<pre>';
+print_r($ineligible_courses);
+echo '<br/>';
+echo '</pre>';
 ?>
     </div>
   </div>
