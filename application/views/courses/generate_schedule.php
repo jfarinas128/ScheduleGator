@@ -58,7 +58,7 @@
             </div>
             <a href="#" id="clear" class="btn btn-search col-md-2">Clear Courses</a>
             <div class="divider"></div>
-            <a href="<?php echo base_url();?>courses/generated"  class="btn btn-search ">Generate Schedule</a>
+            <a href="#" id="Generate_Schedule" class="btn btn-search ">Generate Schedule</a>
         </div>
     </div>
 </body>
@@ -67,6 +67,20 @@
 <script src="<?php echo base_url();?>assets/js/jquery.toastmessage.js"></script>
 
 <script>
+
+    $(document).ready(function() {
+        $("#Generate_Schedule").click(function() {
+            var tbody = $("#selected tbody");
+            if (tbody.children().length == 0) 
+            {
+              $().toastmessage('showNoticeToast', 'Add courses to generate a schedule!'); 
+            }
+            else
+            {
+              window.location = "<?php echo base_url();?>courses/generated";
+            }
+        });
+    });
     $(function () {
         $("#clear").click(function () {    
             $.ajax({

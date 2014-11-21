@@ -187,7 +187,6 @@
                           default:
                               $().toastmessage('showSuccessToast',data);
                         }
-                        
                     }
                 });
                 return false;
