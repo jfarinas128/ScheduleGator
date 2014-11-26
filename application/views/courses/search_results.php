@@ -123,7 +123,7 @@
 <script src="<?php echo base_url();?>assets/js/bootstrap.min.js"></script>
 <script src="<?php echo base_url();?>assets/js/jquery.toastmessage.js"></script>
 <script>
-    var imagePath = "<?php echo base_url();?>assets/images/";
+    var imagePath = "<?php echo base_url();?>assets/images/";//BUG - if you add a section, then ALL sections, the button for course name doesn't blank out
     function UpdatePage() 
     {
       var selected = <?php echo json_encode($selected); ?>;
@@ -187,7 +187,6 @@
                           default:
                               $().toastmessage('showSuccessToast',data);
                         }
-                        
                     }
                 });
                 return false;

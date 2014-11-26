@@ -6,7 +6,7 @@ class Course extends CI_Model {
 	{
 		parent::__construct();
 		$this->days_of_the_week = array('M','T','W','R','F');
-		$this->periods = array('1','2','3','4','5','6','7','8','9','10','11', 'E1', 'E2','E3');
+		$this->periods = array('1','2','3','4','5','6','7','8','9','10','11', '12', '13','14');
 		$this->special_cases = array('E1' => 12, 'E2' => 13, 'E3' => 14, 'TBA' => 0);
 	}
 

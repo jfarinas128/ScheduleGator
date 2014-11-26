@@ -17,18 +17,18 @@
 <?php
 //echo '<p>Smallest Group: '.$smallest;
 foreach($selected_courses as $index => $course_group)
-  {
-      echo '<p>Group: '.$index.' Size:'.sizeof($course_group).'</p>';
-      foreach ($course_group as $course) 
-        {
-          echo '<pre>';
-          print $course['course_name'];
-          echo '<br/>';
-          print_r($course['lecture_period_array']);
-          print_r($course['lecture_day']);
-          echo '</pre>';
-        }
-  }
+{
+    echo '<p>Group: '.$index.' Size:'.sizeof($course_group).'</p>';
+    foreach ($course_group as $course) 
+      {
+        echo '<pre>';
+        print $course['course_name'];
+        echo '<br/>';
+        print_r($course['lecture_period_array']);
+        print_r($course['lecture_day']);
+        echo '</pre>';
+      }
+}
 
 echo '<p>Generated SQL</p>';
 echo '<pre>';
@@ -47,6 +47,13 @@ echo '<pre>';
 print_r($ineligible_courses);
 echo '<br/>';
 echo '</pre>';
+
+echo '<p>Selected Courses</p>';
+echo '<pre>';
+print_r($selected_courses);
+echo '<br/>';
+echo '</pre>';
+
 ?>
     </div>
   </div>

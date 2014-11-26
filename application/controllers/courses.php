@@ -126,9 +126,12 @@ class Courses extends CI_Controller {
 			elseif(!empty($_POST["section"]))
 			{
 				$val = ($this->input->post('section'));
-				if($this->check_selected($val,"section"))
+				if($result = $this->check_selected($val,"section"))
 				{
-					print "Found";
+					if(!empty($result[1]) && $result[1] == "consolidated")
+						print 'Section: '.$val.' Added!';
+					else
+						print "Found";
 					return;
 				}
 				print 'Section: '.$val.' Added!';
@@ -162,10 +165,10 @@ class Courses extends CI_Controller {
 				foreach($names as $index => $arr)
 				{
 					if ($arr['course_name'] == $value || $arr['section'] == $value || $arr['ID'] == $value)
-						{
-							unset($names[$index]); 
-							unset($courses[$index]);
-						}
+					{
+						unset($names[$index]); 
+						unset($courses[$index]);
+					}
 				}
 				$this->nativesession->set('tempcoursenames',$names);
 				$this->nativesession->set('tempcourses',$courses);
@@ -184,28 +187,30 @@ class Courses extends CI_Controller {
 		elseif(!$this->tank_auth->is_logged_in())
 			print "nsi";	
 		else
-		{
 			$this->load->view('courses/generate_schedule');
-		}
 	}
 
-
-	public function splitArray(array $array, $chunks)
+	public function consolidateGroups(&$current_selections, $added_course)
 	{
-	  if (count($array) < $chunks)
-	  {
-	    return array_chunk($array, 1);
-	  }
-	  $new_array = array();
-	  for ($i = 0, $n = floor(count($array) / $chunks); $i < $chunks; ++$i)
-	  {
-	    $slice = $i == $chunks - 1 ? array_slice($array, $i * $n) : array_slice($array, $i * $n, $n);
-	    $new_array[] = $slice;
-	  }
-	  return $new_array;
+		$indices = $courses = array();
+ 		foreach($current_selections as $x => $course_group)
+ 			foreach($course_group as $i => $course)
+ 				if($course['course_name'] == $added_course['course_name'] )
+ 				{
+ 					array_push($indices,$x);
+ 					array_push($courses,$course);
+ 				}
+ 		array_push($courses,$added_course); //now we have all indices of courses with the same name, courses too
+ 		if(!empty($indices) && !empty($courses))
+ 		{
+ 			foreach($indices as $index)
+ 				unset($current_selections[$index]);
+ 			$current_selections = array_values($current_selections);
+ 			array_push($current_selections, $courses);
+ 		}
+ 		$this->nativesession->set('tempcourses', $current_selections);	 		
 	}
 
-	
 	public function check_selected($course, $type)
 	{
 		$names = $this->nativesession->get('tempcoursenames');
@@ -237,22 +242,50 @@ class Courses extends CI_Controller {
 			return false;	
 		}
 		elseif($type == "section")
-			$sql = "select course_name from courses_professors where section = ?;";
+		{
+			$sql = "select * from courses_professors where section = ?;";
+		}
 		elseif($type == "DEPT")
-			$sql = "select course_name from courses_professors where ID = ?;";
-
+		{
+			$sql = "select * from courses_professors where ID = ?;";
+		}
 		if($result = $this->db->query($sql, array($course)))
+		{
+			$row = $result->result_array()[0];
+			foreach($names as $arr)
+			{
+				if ($arr['course_name'] == $row['course_name'])
 				{
-					$row = $result->row();
-					$cname = $row->course_name;
+					if($arr['section'] == "ALL SECTIONS")
+						return true;
+					else 
+					{
+						$this->consolidateGroups($courses,$row);
+						array_push($names,array('course_name' => $row['course_name'],'section' => $row['section']));
+						$this->nativesession->set('tempcoursenames',$names);
+						return array(true, "consolidated");
+					}
+	
 				}
-				foreach($names as $arr)
-					if ($arr['course_name'] == $cname)
-						if($arr['section'] == "ALL SECTIONS")
-							return true;
+			}
+		}
 		else
 			return false;
+	}
 
+	public function splitArray(array $array, $chunks)
+	{
+	  if (count($array) < $chunks)
+	  {
+	    return array_chunk($array, 1);
+	  }
+	  $new_array = array();
+	  for ($i = 0, $n = floor(count($array) / $chunks); $i < $chunks; ++$i)
+	  {
+	    $slice = $i == $chunks - 1 ? array_slice($array, $i * $n) : array_slice($array, $i * $n, $n);
+	    $new_array[] = $slice;
+	  }
+	  return $new_array;
 	}
 
 	public function searchresults($number, $searchid)
