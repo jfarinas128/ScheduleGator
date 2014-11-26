@@ -68,11 +68,7 @@ class Schedule extends CI_Model {
 
 				$sql .= "\"".$cname."\"".' AND section = '."\"".$csection."\" AND(";
 				$c = 0;
-<<<<<<< HEAD
 				foreach($days_to_check_against as $i => $day_list) //$i is ID number of course
-=======
-				foreach($days_to_check_against as $i => $day_list) //$i is ID number 
->>>>>>> origin/master
 				{
 					if($this->in_array_r($i, $multiple_courses)) //one of multiple courses in a given group (EEL3111C i.e)
 					{
@@ -95,10 +91,6 @@ class Schedule extends CI_Model {
 
 						foreach($periods_to_check_against[$i] as $period)
 							$sql .= " AND lecture_period_array NOT LIKE \"%".$period."%\"";
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/master
 					}
 					else
 					{
@@ -119,29 +111,12 @@ class Schedule extends CI_Model {
 
 						foreach($periods_to_check_against[$i] as $period)
 							$sql .= " AND lecture_period_array NOT LIKE \"%".$period."%\"";
-<<<<<<< HEAD
-=======
-	/* //ADDING IN DISCUSSIONS 
-						foreach ($discussions[$i] as $cid => $discussion)
-						{
-							foreach($discussion['discussion_day'] as $dday)
-							{
-								$sql .= " AND lecture_day NOT LIKE \"%".$dday."%\"";
-							}
-							foreach($discussion['discussion_period_array'] as $dperiod)
-							{
-								$sql .= " AND lecture_period_array NOT LIKE \"%".$dperiod."%\"";
-							}
-						}
-	*/
->>>>>>> origin/master
 					}
 					$sql .= "))";
 					$c++;
 				}
 				//$sql .= (!$this->last($current_selections, $index)) ? "\n )) OR ( course_name = " : "))";	//original code
 				if($last_multiple)
-<<<<<<< HEAD
 					$sql .= " ) ";
 				//else $sql .= " ";
 	//ADDING IN DISCUSSIONS VS LECTURE (NOT DICSUSSION VS DISCUSSION) ALSO NOT (DISCUSSION OF A 'MULTIPLE' COURSE course where any discussion of the course is not mutually exclusive) )
@@ -165,10 +140,6 @@ class Schedule extends CI_Model {
 					}
 				}
 				$sql .= " )) OR ( course_name = ";
-=======
-					$sql .= "\n ))) OR ( course_name = ";
-				else $sql .= "\n )) OR ( course_name = ";
->>>>>>> origin/master
 				//BUG, if a course group that has more than one course is at the end of the $current_selections, then "\n )) OR ( course_name = " is rendered instead of "))"		
 			}
 		}
@@ -225,30 +196,13 @@ class Schedule extends CI_Model {
 	            {
 	                $aRecursiveDiff = $this->arrayRecursiveDiff($mValue, $aArray2[$mKey]); 
 	                if (count($aRecursiveDiff)) 
-<<<<<<< HEAD
 	                	$aReturn[$mKey] = $aRecursiveDiff; 
-=======
-	                { 
-	                	$aReturn[$mKey] = $aRecursiveDiff; 
-	                } 
->>>>>>> origin/master
 	            } 
 	            else 
 	            { 
 	                if ($mValue != $aArray2[$mKey]) 
-<<<<<<< HEAD
-=======
-	                { 
->>>>>>> origin/master
 	                    $aReturn[$mKey] = $mValue; 
 	            } 
-<<<<<<< HEAD
-=======
-	        } 
-	        else 
-	        { 
-	            $aReturn[$mKey] = $mValue; 
->>>>>>> origin/master
 	        } 
 	        else  
 	            $aReturn[$mKey] = $mValue; 
@@ -259,16 +213,8 @@ class Schedule extends CI_Model {
 	public function in_array_r($needle, $haystack, $strict = false) 
 	{
 	    foreach ($haystack as $item) 
-<<<<<<< HEAD
 	        if (($strict ? $item === $needle : $item == $needle) || (is_array($item) && $this->in_array_r($needle, $item, $strict))) 
 	            return true;
-=======
-	    {
-	        if (($strict ? $item === $needle : $item == $needle) || (is_array($item) && $this->in_array_r($needle, $item, $strict))) {
-	            return true;
-	        }
-	    }
->>>>>>> origin/master
     	return false;
 	}
 /*
@@ -287,16 +233,8 @@ class Schedule extends CI_Model {
 	public function str_lreplace($search, $replace, $subject)
 	{
 	    $pos = strrpos($subject, $search);
-<<<<<<< HEAD
 	    if($pos !== false)
 	        $subject = substr_replace($subject, $replace, $pos, strlen($search));
-=======
-
-	    if($pos !== false)
-	    {
-	        $subject = substr_replace($subject, $replace, $pos, strlen($search));
-	    }
->>>>>>> origin/master
 	    return $subject;
 	}
 
